@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React_W1_GuGuDan</title>
+    <!-- 라이브러리 또는 프레임 워크이므로 기존의 스크립트를 사용할 필요가 있다! -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- 바벨을 불러오는 방법 -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type = "text/babel">
+        // React Hooks
+        // 새로운 컴포넌트 선언법 : 함수 컴포넌트
+        const GuGuDan = () => {
+            // Hooks로 state 선언하기
+            // this.state는 사용 불가!(클래스가 아니므로)
+            // state를 객체로 묶지 않고 하나씩 쪼갰다고 생각
+            const [first, setFirst] = React.useState(Math.ceil(Math.random() * 9));
+            const [second, setSecond] = React.useState(Math.ceil(Math.random() * 9));
+            const [value, setValue] = React.useState("");
+            const [result, setResult] = React.useState("");
+            const inputRef = React.useRef(null); // 비구조화 할당
+            // setFirst 변수가 해당 state 전용 setState()
+            // 이 state 들은 무조건 컴포넌트 안으로 들어가야한다!
+            // useState가 Hooks 임.
+            
+            const onChangeInput = (e) => {
+                setValue(e.target.value)
+            }
+
+            const onSubmitform = (e) => {
+                e.preventDefault();
+                if (parseInt(value) === first * second) {
+                    setResult("정답!" + value);
+                    setFirst(Math.ceil(Math.random()*9));
+                    setSecond(Math.ceil(Math.random()*9));
+                    setValue("");
+                    // Ref 사용법 변경!
+                    // useRef 쓰고, current로 쓰기! 
+                    inputRef.current.focus();
+                }else{
+                    setResult("땡!");
+                    setValue("");
+                    inputRef.current.focus();
+                }
+            }
+            // 코드 길이 훨씬 짧음!
+            return (
+                <React.Fragment>
+                    <div> {first} X {second} = ? </div>
+                    <form onSubmit = {onSubmitform}>
+                        <input ref = {inputRef} onChange = {onChangeInput} value = {value} />
+                        <button>입력</button>
+                    </form>
+                    <div id = "result">{result}</div>
+                </React.Fragment>
+            );
+            // onChange, onSubmit 처럼 addEventListener 붙이는 부분과
+            // ref 붙이는 부분에 문제가 생김.
+            // 클래스 없으므로 클래스 메서드는 안 되고
+            // 그냥 함수를 const로 만들어서 넣어주면 됨
+
+            
+        }
+        // 새로 생긴 건 아니고
+        // setState나 ref 불필요한 컴포넌트에 활용했음
+        // 그런데 여기에 setState와 ref를 활용할 수 있게 해달라는 요청이 있었고,
+        // 그걸 들어줌 = 그것이 React Hooks.
+
+        // 변수 자리에 구조 쓰고 배열 쓰는게 구조분해(비구조화) 문법
+    </script>
+    <script type="text/babel">
+        ReactDOM.render(<GuGuDan />, document.querySelector('#root'));
+    </script>
+</body>
+</html>

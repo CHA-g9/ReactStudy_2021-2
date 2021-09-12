@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React_W1_GuGuDan</title>
+    <!-- 라이브러리 또는 프레임 워크이므로 기존의 스크립트를 사용할 필요가 있다! -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- 바벨을 불러오는 방법 -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type = "text/babel">
+        //const e = React.createElement;
+        // 컴포넌트
+        class GuGuDan extends React.Component {
+            constructor(props){
+                super(props);
+                // 여기까지는 의미도 없는 디폴트
+                // 상태의 초기값 선언
+                this.state = {
+                    //바뀌는 것들을 속성으로 추가
+                    //첫번째 숫자(랜덤으로 0부터 9까지 수 중 정수 선발)
+                    first: Math.ceil(Math.random()*9),
+                    //두번째 숫자
+                    second: Math.ceil(Math.random()*9),
+                    //사용자 입력값
+                    value: "",
+                    //결과값
+                    result: '',
+                    
+                };   
+            }
+            onSubmit = (e) => {
+                e.preventDefault();
+                if (parseInt(this.state.value) === this.state.first * this.state.second) {
+                    this.setState((prevState) => {
+                        return {
+                        first: Math.ceil(Math.random()*9),
+                        second: Math.ceil(Math.random()*9),
+                        value: '',
+                        result: "정답 : " + prevState.value,
+                        // 정답이 무슨 값인지 반환하게 해줌.
+                        // 데이터가 변하면 자동으로 연결해줌 = 리액트의 장점
+                        // 이전의 상태값과 다음 상태값을 구분하기 위해 이렇게 만듦
+                        // 그냥 this.state.value만 해도 기능은 동일하지만 구분이 어려우므로
+                        // 이렇게 함수형태로 나누어서 이전 State와 구분하여 활용하는 것.(함수형 Setstate)
+                        };                 
+                    });
+                    this.input.focus();
+                } else {
+                    this.setState({
+                        result: "땡!",
+                        value: '',
+                    });
+                    this.input.focus();
+                }
+            };
+            // JS와 동일하다.
+
+            onChange = (e) => {this.setState({ value : e.target.value})};
+            // 변하는 부분을 우리가 완전히 컨트롤 하는 것.
+            
+            input;
+            //this.input 이라는 것을 이용해서 리액트가 focusing 할 수 있게 만듦.
+            //그러기 위해서 선언한 변수!
+
+            onRefInput = (c) => {this.input = c;};
+            render (){
+                // 태그 추가
+                return (
+                    <React.Fragment>
+                        <div>{this.state.first} 곱하기 {this.state.second} = ?</div>
+                        <form onSubmit = {this.onSubmit}>
+                            <input ref={this.onRefInput} type="number" value={this.state.value} onChange = {this.onChange} />
+                            <button type = "submit">입력</button>
+                        </form>
+                        <div> {this.state.result}</div>
+                    </React.Fragment>);
+                // 소괄호의 추가 여부는 자기 스타일. 위치 이슈가 있다고.
+                // 태그 내부의 중괄호는 JS를 가능하게 하는 것
+                // 태그 사이의 중괄호도 동일
+                // 화살표함수 = function과 동일
+                // 여기는 state 바꾸어야 하므로 onChange 안에서 setState 해야함!
+                // 여기 form 태그에는 숫자만 입력 가능하다.
+                // onSubmit 은 자동으로 바꾸는 것이므로 state에 넣으면 안된다
+                // onSubmit 안에 구구단 로직이 들어가게 해서 정답의 여부를 유추한다.
+                    // 이 경우는 JS와 JSX 섞어 쓰지 않도록 주의
+                    // 그러므로 JS 로직은 클래스의 메서드로 만드는 것이 편하다.
+                // 숫자는 어떻게 넣을 수 있을까?
+            };
+        }
+    
+    </script>
+    <script type="text/babel">
+        ReactDOM.render(<GuGuDan />, document.querySelector('#root'));
+    </script>
+</body>
+</html>
