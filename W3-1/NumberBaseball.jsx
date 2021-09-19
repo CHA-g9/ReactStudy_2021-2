@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, createRef } from "react";
 import Try from "./try";
 
 function getNumbers() {
@@ -43,6 +43,7 @@ class NumberBaseball extends PureComponent {
                 answer: getNumbers(),
                 tries: [],
             });
+            this.inputRef.current.focus();
         } else {
             const answerArray = this.state.value.split('').map((v) => parseInt(v));
             let strike = 0;
@@ -57,6 +58,7 @@ class NumberBaseball extends PureComponent {
                     answer: getNumbers(),
                     tries: [],
                 });
+                this.inputRef.current.focus();
             } else {
                 for (let i = 0; i < 4; i += 1){
                     if (answerArray[i] === this.state.answer[i]){
@@ -70,18 +72,21 @@ class NumberBaseball extends PureComponent {
                             value: '',
                         }
                     });
+                    this.inputRef.current.focus();
                 }
             }
         };
 
     };
 
+    inputRef = createRef();
+
     render() {
         return (
             <>
                 <h1>{this.state.value}</h1>
                 <form onSubmit={this.onSubmitForm}>
-                    <input maxLength={4} value={this.state.value} onChange={this.onChangeInput} />
+                    <input ref= {this.inputRef} maxLength={4} value={this.state.value} onChange={this.onChangeInput} />
                 </form>
                 <div>시도 : {this.state.tries.length}</div>
                 <ul>
